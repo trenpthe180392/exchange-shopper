@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<style>
+    .navbar-orange {
+        background: linear-gradient(to right, #ff7e00, #ffa726);
+    }
+
+    .nav-link {
+        color: white !important;
+        font-weight: 500;
+        transition: 0.2s;
+    }
+
+    .nav-link:hover {
+        color: #ffe0b2 !important;
+        transform: scale(1.05);
+    }
+
+    .navbar-brand {
+        color: white !important;
+        font-weight: bold;
+        font-size: 1.3rem;
+    }
+
+    .badge-cart {
+        background-color: #d84315;
+        font-size: 0.75rem;
+    }
+
+    .btn-logout {
+        color: white !important;
+    }
+
+    .btn-logout:hover {
+        color: #ffccbc !important;
+    }
+</style>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-orange shadow-sm">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold text-primary" th:href="@{/}">🏠 Shop Thể Thao</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav ms-auto d-flex align-items-center gap-3">
+
+                <!-- Mục chung -->
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/products}"><i class="bi bi-box"></i> Sản phẩm</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link text-danger" th:href="@{/admin/products}"><i class="bi bi-shield-lock"></i> Quản lý sản phẩm</a>
+                </li>
+                <!-- ADMIN -->
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link text-danger" th:href="@{/admin}"><i class="bi bi-shield-lock"></i> Quản trị</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/users}"><i class="bi bi-people"></i> Người dùng</a>
+                </li>
+                <!-- Thêm sản phẩm - chỉ admin mới thấy -->
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link text-success" th:href="@{/admin/products/add}">
+                        <i class="bi bi-plus-square"></i> Thêm sản phẩm
+                    </a>
+                </li>
+
+
+                <!-- Đơn hàng + Giỏ hàng -->
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/order/list}"><i class="bi bi-receipt"></i> Đơn hàng</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/cart}">
+                        <i class="bi bi-cart"></i> Giỏ hàng
+                        <span class="badge bg-danger" th:text="${cartCount}">0</span>
+                    </a>
+                </li>
+
+                <!-- Xin chào -->
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <span class="nav-link disabled text-muted">Xin chào, <strong sec:authentication="name"></strong></span>
+                </li>
+
+                <!-- Đăng nhập -->
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" th:href="@{/login}"><i class="bi bi-box-arrow-in-right"></i> Đăng nhập</a>
+                </li>
+
+                <!-- Đăng xuất -->
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <form th:action="@{/logout}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-link nav-link p-0" style="border: none; background: none;">
+                            <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                        </button>
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+</body>
+</html>
